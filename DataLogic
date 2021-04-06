@@ -1,0 +1,88 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Configuration;
+using System.Data.SqlClient;
+using LOGO_AKTARIM.Entities;
+using System.Windows.Forms;
+
+namespace LOGO_AKTARIM.DATA_ACCESS
+{
+    public class DataLogic
+    {
+
+
+        public static string _error;
+
+        static string ConnectionString = @"Data Source=;Initial Catalog=;Persist Security Info=True;User ID=;Password=";
+
+        static DataAccess dataAccess = new DataAccess(ConnectionString, ref _error);
+
+        private static DataAccessException exception;
+
+
+
+
+        public static List<Items> GetItems()
+        {
+            var serviceresult = new List<Items>();
+
+            try
+            {
+                var query = string.Format(@"select 
+                              CARDTYPE AS 'CARD_TYPE',
+                              CODE AS CODE,
+                              NAME AS NAME,
+                              PURCHBRWS AS USEF_PURCHASING,
+                              SALESBRWS AS USEF_SALES,
+                              MTRLBRWS AS USEF_MM,
+                 (SELECT CODE FROM LG_003_UNITSETF WHERE LOGICALREF=UNITSETREF) AS UNITSET_CODE,
+                              CAPIBLOCK_CREATEDBY AS CREATED_BY,
+                              CAPIBLOCK_CREADEDDATE AS DATE_CREATED,
+                              CAPIBLOCK_CREATEDHOUR AS HOUR_CREATED,
+                              CAPIBLOCK_CREATEDMIN AS MIN_CREATED,
+                              CAPIBLOCK_CREATEDSEC AS SEC_CREATED
+                                    FROM LG_003_ITEMS WHERE ACTIVE=0");
+
+                var reader = dataAccess.ExecuteDataReader(query);
+
+                while (reader.Read())
+                {
+                    var item = new Items();
+
+                    item.CARD_TYPE = int.Parse(reader["CARD_TYPE"].ToString());
+                    //item.CARD_TYPE = Convert.ToInt32(reader["CARD_TYPE"].ToString());
+                    //item.CARD_TYPE = (int)reader["CARD_TYPE"];
+                    item.CODE = reader["CODE"].ToString();
+                    item.NAME = reader["NAME"].ToString();
+                    item.USEF_PURCHASING = int.Parse(reader["USEF_PURCHASING"].ToString());
+                    item.USEF_SALES = int.Parse(reader["USEF_SALES"].ToString());
+                    item.USEF_MM = int.Parse(reader["USEF_MM"].ToString());
+                    item.UNITSET_CODE = reader["UNITSET_CODE"].ToString();
+                    item.CREATED_BY = int.Parse(reader["CREATED_BY"].ToString());
+                    // item.DATE_CREATED = DateTime.Now(reader["DATE_CREATED"].ToString());
+                    item.HOUR_CREATED = int.Parse(reader["HOUR_CREATED"].ToString());
+                    item.MIN_CREATED = int.Parse(reader["MIN_CREATED"].ToString());
+                    item.SEC_CREATED = int.Parse(reader["SEC_CREATED"].ToString());
+                    serviceresult.Add(item);
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+
+
+            return serviceresult;
+        }
+
+
+        
+
+    }
+}
