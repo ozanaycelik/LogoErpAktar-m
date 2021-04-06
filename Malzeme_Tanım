@@ -1,0 +1,35 @@
+using System;
+
+
+namespace LOGO_AKTARIM.Entities
+{
+    public class Items
+    {
+        public int CARD_TYPE { get; set; }
+
+        public string CODE { get; set; }
+
+        public string NAME { get; set; }
+
+
+        public int USEF_PURCHASING { get; set; }
+
+        public int USEF_SALES { get; set; }
+
+        public int USEF_MM { get; set; }
+
+        public string UNITSET_CODE { get; set; }
+
+
+        public int CREATED_BY { get; set; }
+
+        public DateTime DATE_CREATED { get; set; }
+
+        public int HOUR_CREATED { get; set; }
+
+        public int MIN_CREATED { get; set; }
+
+        public int SEC_CREATED { get; set; }
+
+    }
+}
