@@ -1,0 +1,107 @@
+using LOGO_AKTARIM.DATA_ACCESS;
+using LOGO_AKTARIM.Entities;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Windows.Forms;
+
+
+namespace LOGO_AKTARIM
+{
+    public partial class Form1 : DevExpress.XtraEditors.XtraForm
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        public static void Logo_aktarım()
+        {
+
+
+
+            UnityObjects.UnityApplication App = new UnityObjects.UnityApplication();
+
+           
+
+                if (Global.App.Login("LOGO", "LOGO", 3,1))
+                {
+
+
+
+                    MessageBox.Show("LOGIN OLUNDU", "Bilgi", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+
+                   UnityObjects.Data items = Global.App.NewDataObject(UnityObjects.DataObjectType.doMaterial);
+
+                    foreach (var item in DataLogic.GetItems())
+                    {
+                        items.New();
+                        items.DataFields.FieldByName("CARD_TYPE").Value = item.CARD_TYPE;
+                        items.DataFields.FieldByName("CODE").Value = item.CODE;
+                        items.DataFields.FieldByName("NAME").Value = item.NAME;
+                        items.DataFields.FieldByName("USEF_PURCHASING").Value = item.USEF_PURCHASING;
+                        items.DataFields.FieldByName("USEF_SALES").Value = item.USEF_SALES;
+                        items.DataFields.FieldByName("USEF_MM").Value = item.USEF_MM;
+                        items.DataFields.FieldByName("UNITSET_CODE").Value = item.UNITSET_CODE;
+                        items.DataFields.FieldByName("CREATED_BY").Value = item.CREATED_BY;
+                        items.DataFields.FieldByName("DATE_CREATED").Value = DateTime.Now.ToString();
+                        items.DataFields.FieldByName("HOUR_CREATED").Value = item.HOUR_CREATED;
+                        items.DataFields.FieldByName("MIN_CREATED").Value = item.MIN_CREATED;
+                        items.DataFields.FieldByName("SEC_CREATED").Value = item.SEC_CREATED;
+                    }
+
+
+                    if (items.Post() == true)
+                    {
+                        MessageBox.Show("POST OK !");
+                    }
+                    else
+                    {
+                        if (items.ErrorCode != 0)
+                        {
+                            MessageBox.Show("DBError(" + items.ErrorCode.ToString() + ")-" + items.ErrorDesc + items.DBErrorDesc);
+                        }
+                        else if (items.ValidateErrors.Count > 0)
+                        {
+                            string result = "XML ErrorList:";
+                            for (int i = 0; i < items.ValidateErrors.Count; i++)
+                            {
+                                result += "(" + items.ValidateErrors[i].ID.ToString() + ") - " + items.ValidateErrors[i].Error;
+                            }
+                            MessageBox.Show(result);
+                        }
+                    }
+
+                
+            }
+            else
+            {
+                MessageBox.Show(Global.App.GetLastError().ToString() + "/" + Global.App.GetLastErrorString());
+            }
+
+        }
+
+        private void simpleButton1_Click(object sender, EventArgs e)
+        {
+
+            //DataLogic.config.Save();
+
+            Logo_aktarım();
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            var item = new Items { NAME = "Hello"};
+
+
+            MessageBox.Show(item.NAME);
+
+
+        }
+    }
+}
